@@ -1,0 +1,4 @@
+name: BukkitMcAPI
+author: Zorro909
+version: 0.5
+main: de.jectrum.Bukkit.McAPI.Plugin
