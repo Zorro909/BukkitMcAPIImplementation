@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,7 +24,7 @@ import java.util.Set;
 public class Connection {
 
 	HttpURLConnection conn;
-	DataOutputStream wr;
+	OutputStream wr;
 	BufferedReader br;
 	private String userAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
@@ -111,12 +112,12 @@ public class Connection {
 		conn.setInstanceFollowRedirects(true);
 		conn.setDoOutput(true);
 		conn.setDoInput(true);
-		conn.setConnectTimeout(200);
-		conn.setReadTimeout(200);
-		wr = new DataOutputStream(conn.getOutputStream());
-		wr.write(sb.getBytes("UTF-8"));
+		conn.setConnectTimeout(2000);
+		conn.setReadTimeout(10000);
+		conn.connect();
+		wr = conn.getOutputStream();
+		wr.write(sb.getBytes());
 		wr.flush();
-		wr.close();
 		br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		return this;
 	}
@@ -132,7 +133,7 @@ public class Connection {
 	 *             Occurs when the Host can't be found
 	 */
 	private StringBuffer writeToHost(String output) throws IOException {
-		wr.writeBytes("&" + output);
+		wr.write(("&" + output).getBytes("UTF-8"));
 		wr.flush();
 		wr.close();
 		StringBuffer sb = new StringBuffer();
